@@ -17,10 +17,11 @@ void Waiting::Execute(Vehicle* v){
 		cout<<"Select Motion:"<<endl;
 		cout<<"1.Waiting \n"
 			<<"2.Cover \n"
-			<<"3.Dock \n"
+			<<"3.NavToCharger \n"
 			<<"4.FollowWall \n"
 			//<<"5.ObstacleAvoidance \n"
-			<<"6.TurnOff \n";
+			//<<"6. Dock \n"
+			<<"7.TurnOff \n";
 		int motion;
 		cin>>motion;
 		switch(motion){ //function selection
@@ -28,13 +29,15 @@ void Waiting::Execute(Vehicle* v){
 				break;
 			case 2: v->GetFSM()->ChangeState(new Cover);v->SetBusy(true);
 				break;
-			case 3: v->GetFSM()->ChangeState(new Dock);v->SetBusy(true);
+			case 3: v->GetFSM()->ChangeState(new NavToCharger);v->SetBusy(true);
 				break;
 			case 4: v->GetFSM()->ChangeState(new FollowWall);v->SetBusy(true);
 				break;
 			//case 5: v->GetFSM()->ChangeState(new ObstacleAvoidance);busy = true;
 				break;
-			case 6: v->GetFSM()->ChangeState(new TurnOff);v->SetBusy(true);
+			//case 6:v->GetFSM()->ChangeState(new Dock);v->SetBusy(true);
+				break;
+			case 7: v->GetFSM()->ChangeState(new TurnOff);v->SetBusy(true);
 				break;
 			default: cout<<"Please select a valid function!"<<endl;
 				break;
@@ -67,18 +70,39 @@ void Cover::Exit(Vehicle* v){
 }
 
 //================================================================================
-//==============================    Dock      ====================================
+//==============================    NavToCharger      ============================
 //================================================================================
 void NavToCharger::Enter(Vehicle* v){
-	cout<<"Entering Dock state."<<endl;
+	cout<<"Entering NavToCharger state."<<endl;
 }
 
 void NavToCharger::Execute(Vehicle* v){
-	cout<<"Executing Dock state."<<endl;
+	cout<<"Executing NavToCharger state."<<endl;
 
-	//A* algorithm to the charger
+	//Navigating(charger)
+	//target point calculate....
+	//path calculate...
 	//....
 	
+	//if navigation is successed 
+	cout<<"Target point found, Im navigating to there."<<endl;
+	
+}
+
+void NavToCharger::Exit(Vehicle* v){
+	cout<<"Exiting NavToCharger state."<<endl;
+}
+
+//================================================================================
+//==============================    Dock      ====================================
+//================================================================================
+void Dock::Enter(Vehicle* v){
+	cout<<"Entering Dock state."<<endl;
+}
+
+void Dock::Execute(Vehicle* v){
+	cout<<"Executing Dock state."<<endl;
+
 	if(v->IsCharging()){
 		cout<<"Im charging!"<<endl;
 	}
@@ -90,7 +114,7 @@ void NavToCharger::Execute(Vehicle* v){
 	v->GetFSM()->RevertToPreviousState();
 }
 
-void NavToCharger::Exit(Vehicle* v){
+void Dock::Exit(Vehicle* v){
 	cout<<"Exiting Dock state."<<endl;
 }
 

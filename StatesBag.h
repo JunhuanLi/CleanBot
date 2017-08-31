@@ -29,6 +29,18 @@ public:
 
 class NavToCharger : public State{
 public:
+	NavToCharger(){}
+	~NavToCharger(){}
+
+	virtual void Enter(Vehicle* v);
+
+	virtual void Execute(Vehicle* v);
+
+	virtual void Exit(Vehicle* v);
+};
+
+class Dock : public State{
+public:
 	Dock(){}
 	~Dock(){}
 

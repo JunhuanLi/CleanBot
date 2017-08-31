@@ -62,6 +62,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Navigation.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMachine.h" />
