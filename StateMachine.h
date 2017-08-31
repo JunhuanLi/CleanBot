@@ -1,6 +1,5 @@
 #pragma once
-#include "State.h"
-#include "StatesBag.h"
+#include"State.h"
 #include <cassert>
 #include<string>
 #include<iostream>
@@ -39,8 +38,7 @@ public:
 		assert(pNewState && 
 			 "<StateMachine::ChangeState>: trying to change to NULL state");
 
-		m_pPreviousState = m_pCurrentState;
-		//previouslocation = getcurrent_loacation
+		
 		m_pCurrentState->Exit(m_pOwner);
 		m_pCurrentState = pNewState;
 		m_pCurrentState->Enter(m_pOwner);

@@ -16,7 +16,7 @@ void Waiting::Execute(Vehicle* v){
 	while(!v->GetBusy()) {
 		cout<<"Select Motion:"<<endl;
 		cout<<"1.Waiting \n"
-			<<"2.Cover \n"
+			//<<"2.Cover \n"
 			<<"3.NavToCharger \n"
 			<<"4.FollowWall \n"
 			//<<"5.ObstacleAvoidance \n"
@@ -27,7 +27,7 @@ void Waiting::Execute(Vehicle* v){
 		switch(motion){ //function selection
 			case 1: cout<<"Still waiting your selections!"<<endl;
 				break;
-			case 2: v->GetFSM()->ChangeState(new Cover);v->SetBusy(true);
+			//case 2: v->GetFSM()->ChangeState(new Cover);v->SetBusy(true);
 				break;
 			case 3: v->GetFSM()->ChangeState(new NavToCharger);v->SetBusy(true);
 				break;
@@ -74,11 +74,27 @@ void Cover::Exit(Vehicle* v){
 //================================================================================
 void NavToCharger::Enter(Vehicle* v){
 	cout<<"Entering NavToCharger state."<<endl;
+	//store the recover infomation
+	v->GetFSM()->SetPreviousState( v->GetFSM()->GetCurrentState() ) ;
 }
 
 void NavToCharger::Execute(Vehicle* v){
 	cout<<"Executing NavToCharger state."<<endl;
 
+	if(v->IsChargeLocationUpdated()){
+
+		//calculate the path to charger
+
+		v->GetNav()->P2PMoving( v->GetChargerLocation() );
+	
+	}
+	else {
+		//FindChargerLocation()
+
+		v->GetNav()->P2PMoving( v->GetChargerLocation() );
+	}
+	
+	//P2PMoving()
 	//Navigating(charger)
 	//target point calculate....
 	//path calculate...
