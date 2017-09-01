@@ -27,17 +27,33 @@ public:
 	void SetCurrentState(State*  newState){m_pCurrentState = newState;}
 
 	void UpdateState() const{
-	cout<<"Im in statemachine update function."<<endl;
+	//cout<<"Im in statemachine update function."<<endl;
 	m_pCurrentState->Execute(m_pOwner);
 	}
 	
-	void ChangeState(State* pNewState){
-		cout<<"Im inside of ChangeState function."<<endl;
+	string GetStateName(State* state){
+		string str;
+		str = typeid(*state).name();
+		int i = str.length();
+		str = str.substr(6,i);
+		return str;
+	}
 
-		cout<<"Changing to "<<endl;
+	void ChangeState(State* pNewState){
+		//cout<<"Im inside of ChangeState function."<<endl;
+
+		string str = GetStateName(pNewState);
+
+		//cout<<"Changing to "<<endl;
+
 		assert(pNewState && 
 			 "<StateMachine::ChangeState>: trying to change to NULL state");
 
+		
+		if( str == "NavToCharger" || str == "ObstacleAvoidance" || str == "TurnOff" ){
+			cout<<"新状态为全局状态，正在设定全局变量"<<endl;
+			SetPreviousState( GetCurrentState() ) ;
+		}
 		
 		m_pCurrentState->Exit(m_pOwner);
 		m_pCurrentState = pNewState;

@@ -12,37 +12,8 @@ void Waiting::Enter(Vehicle* v){
 
 void Waiting::Execute(Vehicle* v){
 	cout<<"Executing Waiting state."<<endl;
-
-	while(!v->GetBusy()) {
-		cout<<"Select Motion:"<<endl;
-		cout<<"1.Waiting \n"
-			//<<"2.Cover \n"
-			<<"3.NavToCharger \n"
-			<<"4.FollowWall \n"
-			//<<"5.ObstacleAvoidance \n"
-			//<<"6. Dock \n"
-			<<"7.TurnOff \n";
-		int motion;
-		cin>>motion;
-		switch(motion){ //function selection
-			case 1: cout<<"Still waiting your selections!"<<endl;
-				break;
-			//case 2: v->GetFSM()->ChangeState(new Cover);v->SetBusy(true);
-				break;
-			case 3: v->GetFSM()->ChangeState(new NavToCharger);v->SetBusy(true);
-				break;
-			case 4: v->GetFSM()->ChangeState(new FollowWall);v->SetBusy(true);
-				break;
-			//case 5: v->GetFSM()->ChangeState(new ObstacleAvoidance);busy = true;
-				break;
-			//case 6:v->GetFSM()->ChangeState(new Dock);v->SetBusy(true);
-				break;
-			case 7: v->GetFSM()->ChangeState(new TurnOff);v->SetBusy(true);
-				break;
-			default: cout<<"Please select a valid function!"<<endl;
-				break;
-		}
-	}
+	//监测下一指令
+	
 }
 
 void Waiting::Exit(Vehicle* v){
@@ -59,10 +30,13 @@ void Cover::Enter(Vehicle* v){
 
 void Cover::Execute(Vehicle* v){
 	cout<<"Executing Cover state."<<endl;
-	if(v->GetPower() < 0.2){
-		cout<<"The battery is low, going to charge myself!"<<endl;
-		v->GetFSM()->ChangeState(new NavToCharger);
-	}
+	
+
+	//监测各种状态
+	//监测是否成功完成
+	//切换到下一状态 
+
+
 }
 
 void Cover::Exit(Vehicle* v){
@@ -74,34 +48,40 @@ void Cover::Exit(Vehicle* v){
 //================================================================================
 void NavToCharger::Enter(Vehicle* v){
 	cout<<"Entering NavToCharger state."<<endl;
-	//store the recover infomation
-	v->GetFSM()->SetPreviousState( v->GetFSM()->GetCurrentState() ) ;
+	
 }
 
 void NavToCharger::Execute(Vehicle* v){
 	cout<<"Executing NavToCharger state."<<endl;
-
+	Navigation* m_pNav = new Navigation(v);
 	if(v->IsChargeLocationUpdated()){
 
-		//calculate the path to charger
-
-		v->GetNav()->P2PMoving( v->GetChargerLocation() );
+		m_pNav->P2PMoving( v->GetChargerLocation() );
 	
 	}
 	else {
-		//FindChargerLocation()
 
-		v->GetNav()->P2PMoving( v->GetChargerLocation() );
+
+		//寻找充电座坐标 FindChargerLocation()
+
+
+
+		m_pNav->P2PMoving( v->GetChargerLocation() );
 	}
 	
-	//P2PMoving()
-	//Navigating(charger)
-	//target point calculate....
-	//path calculate...
-	//....
-	
-	//if navigation is successed 
-	cout<<"Target point found, Im navigating to there."<<endl;
+	if(m_pNav->IsSucceed() == true){
+		cout<<"Entering Dock state!"<<endl;
+		v->GetFSM()->ChangeState(new Dock);
+	} else {
+		cout<<"未能到达充电地点！报警！"<<endl;
+
+
+
+		//导航失败处理。。。
+
+
+		v->GetFSM()->ChangeState(new Dock);
+	}
 	
 }
 
@@ -119,12 +99,18 @@ void Dock::Enter(Vehicle* v){
 void Dock::Execute(Vehicle* v){
 	cout<<"Executing Dock state."<<endl;
 
+	//dock连环动作调用
+	//各种状态监测
+
+	//if(matched)
+	//v->SetCharging(true)
 	if(v->IsCharging()){
 		cout<<"Im charging!"<<endl;
+		//while(v->GetPower() < 1.0){
+			//wait untill fully charged...
+		//}
 	}
-	//while(v->GetPower() < 1.0){
-		//charge
-	//}
+	
 	cout<<"Charging is finished!"<<endl;
 	cout<<"Recovering the previous job!"<<endl;
 	v->GetFSM()->RevertToPreviousState();
@@ -142,11 +128,29 @@ void FollowWall::Enter(Vehicle* v){
 }
 
 void FollowWall::Execute(Vehicle* v){
-	cout<<"Executing Waiting state."<<endl;
+	cout<<"Executing FollowWall state."<<endl;
+
+
+
+	//建立地图
+
+
+
+	//发现充电座就记录
+	//v->SetChargerLocation();
+
+
+	//监测各种状态
+
+
+
+	//如果完成就切换到覆盖状态
+
+	//失败后处理
 }
 
 void FollowWall::Exit(Vehicle* v){
-	cout<<"Exiting Waiting state."<<endl;
+	cout<<"Exiting FollowWall state."<<endl;
 }
 
 //================================================================================
@@ -158,6 +162,21 @@ void ObstacleAvoidance::Enter(Vehicle* v){
 
 void ObstacleAvoidance::Execute(Vehicle* v){
 	cout<<"Executing ObstacleAvoidance state."<<endl;
+
+
+	//避障算法
+		//各种状态监测
+
+
+
+
+
+	//避障成功返回上一状态
+	//避障失败报警
+
+
+
+
 }
 
 void ObstacleAvoidance::Exit(Vehicle* v){
@@ -173,6 +192,16 @@ void TurnOff::Enter(Vehicle* v){
 
 void TurnOff::Execute(Vehicle* v){
 	cout<<"Executing TurnOff state."<<endl;
+
+
+
+	//转换到等待状态或者关机
+	//数据要保留
+	//确保再次开机能继续之前的工作
+
+
+
+
 }
 
 void TurnOff::Exit(Vehicle* v){

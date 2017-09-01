@@ -11,7 +11,7 @@ using namespace std;
 class Vehicle{
 private:
 	StateMachine* m_pStateMachine;
-	Navigation* m_pNav;
+	//Navigation* m_pNav;
 	Vector2D m_ChargerLocation;
 	Vector2D VehiclePosition;
 
@@ -26,7 +26,7 @@ public:
 	Vehicle(){
 		m_pStateMachine = new StateMachine(this);
 		m_pStateMachine->SetCurrentState(new Waiting);
-		m_pNav = new Navigation(this);
+		//m_pNav = new Navigation(this);
 		m_ChargerLocation = Vector2D();
 		VehiclePosition = Vector2D();
 
@@ -43,6 +43,7 @@ public:
 	void Update();
 
 	bool IsCharging(){return Charging;}
+	void SetCharging(bool b){Charging = b;}
 
 	bool GetBusy(){return Busy;}
 	void SetBusy(bool b){Busy = b;}
@@ -54,7 +55,7 @@ public:
 
 	StateMachine* GetFSM(){return m_pStateMachine;}
 
-	Navigation* GetNav(){return m_pNav;}
+	//Navigation* GetNav(){return m_pNav;}
 
 	Vector2D GetVehiclePosition(){return VehiclePosition;}
 
